@@ -5,7 +5,7 @@ from utils import xid
 
 def migration(cfg, truncate=True):
     users = list()
-    userStatus = ('Pending', 'Actived', 'Freezed')
+    # userStatus = ('Pending', 'Actived', 'Freezed')
     userTypes = ('Normal', 'Subscriber')
 
     with mysql.conn(cfg) as c:
@@ -15,7 +15,7 @@ def migration(cfg, truncate=True):
             for x in r:
                 users.append(x)
     
-    users = tuple(map(lambda x: (xid.new().to_str(), x['email'], x['nickname'], x['password'], userStatus[x['status']], x['dateline'], userTypes[x['types']], x['sub_exp'], x['points'], x['allow_device_num'], x['jwt_exp'], True), users))
+    users = tuple(map(lambda x: (xid.new(), x['email'], x['nickname'], x['password'], 'Pending', x['dateline'], userTypes[x['types']], x['sub_exp'], x['points'], 1, 20), users))
  
     with pg.conn(cfg) as c:
         with c.cursor() as cur:
@@ -23,6 +23,6 @@ def migration(cfg, truncate=True):
                 cur.execute('TRUNCATE TABLE users')
             
             for user in users:
-                cur.execute('INSERT INTO users (id, email, nickname, "password", status, dateline, kind, sub_exp, points, allow_device_num, session_exp, need_reverify_email) VALUES( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', user)
+                cur.execute('INSERT INTO users (id, email, nickname, "password", status, dateline, kind, sub_exp, points, allow_device_num, session_exp) VALUES( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', user)
     
     return len(users)

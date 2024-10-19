@@ -16,11 +16,11 @@ def main():
     # n = topic.migration_content(cfg,htmls)
     # print('已迁移 {} 条文章章节数据'.format(n))
 
-    n = topic_tag.migration(cfg)
-    print('已迁移 {} 条文章标签数据'.format(n))
+    # n = topic_tag.migration(cfg)
+    # print('已迁移 {} 条文章标签数据'.format(n))
 
-    # n = user.migration(cfg)
-    # print('已迁移 {} 条用户数据'.format(n))
+    n = user.migration(cfg)
+    print('已迁移 {} 条用户数据'.format(n))
 
 if __name__ == "__main__":
     main()
