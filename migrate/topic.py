@@ -1,7 +1,7 @@
 import db.pg as pg
 import db.mysql as mysql
 from utils import xid,sha256
-from .subject import get_id
+from .subject import get_id as get_subject_id
 from bs4 import BeautifulSoup
 
 
@@ -35,9 +35,9 @@ ORDER BY t.id ASC ''')
     htmls = list()
     for row in rows:
          # 获取专题ID
-        subject_id = get_id(cfg, row['subject_slug'])
+        subject_id = get_subject_id(cfg, row['subject_slug'])
         topic_id = xid.new()
-        newRows.append((topic_id, row['title'], row['slug'], row['summary'], row['author'], row['src'], row['hit'], row['dateline'], row['try_readable']==1, row['is_del']==1,row['cover'],row['md'],row['pin'],subject_id))
+        newRows.append((topic_id, row['title'], row['slug'], row['summary'], row['author'], row['src'], row['hit'], row['dateline'], row['try_readable']==1, row['is_del']==1,row['cover'].replace('https://file.axum.rs', cfg['FILE_URL']),row['md'],row['pin'],subject_id))
         htmls.append((topic_id,row['html']))
 
 

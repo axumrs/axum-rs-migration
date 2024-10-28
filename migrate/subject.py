@@ -13,7 +13,7 @@ def migration(cfg,truncate=True):
             for x in r:
                 rows.append(x)
     
-    rows = tuple(map(lambda x: (xid.new(), x['name'], x['slug'], x['summary'], x['cover'],subjectState[x['status']], x['price'], x['pin'],x['is_del']==1), rows))
+    rows = tuple(map(lambda x: (xid.new(), x['name'], x['slug'], x['summary'], x['cover'].replace('https://file.axum.rs', cfg['FILE_URL']),subjectState[x['status']], x['price']//100, x['pin'],x['is_del']==1), rows))
 
     with pg.conn(cfg) as c:
         with c.cursor() as cur:
@@ -28,8 +28,7 @@ def migration(cfg,truncate=True):
 def get_id(cfg, slug):
     with pg.conn(cfg) as c:
         with c.cursor() as cur:
-            cur.execute('SELECT id FROM subjects WHERE slug = %s', (slug, ))
-            r = cur.fetchone()
+            r = cur.execute('SELECT id FROM subjects WHERE slug = %s', (slug, )).fetchone()
             if r:
                 return r['id']
             else:
